@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Apartments | Rent in Addis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <h1>Rent in Addis</h1>
+    <p>Apartment Management Portal</p>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{{ url_for('home') }}">Public Listings</a></li>
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('manage_apartments') }}" class="active">Apartments</a></li>
+        <li><a href="{{ url_for('manage_tenants') }}">Tenants</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<section class="management-area">
+    <h2>All Apartments ({{ apartments|length }})</h2>
+    <a href="{{ url_for('add_apartment') }}" class="login-btn" style="background-color: #00796b; margin-bottom: 20px;">+ Add New Apartment</a>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Beds</th>
+                <th>Baths</th>
+                <th>Rent (ETB)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apartment in apartments %}
+            <tr>
+                <td>{{ apartment['id'] }}</td>
+                <td>{{ apartment['name'] }}</td>
+                <td>{{ apartment['location'] }}</td>
+                <td>{{ apartment['bedrooms'] }}</td>
+                <td>{{ apartment['bathrooms'] }}</td>
+                <td>{{ "{:,.2f}".format(apartment['rent']) }}</td>
+                <td class="action-buttons">
+                    <a href="{{ url_for('edit_apartment', id=apartment['id']) }}" class="login-btn action-edit">Edit</a>
+                    
+                    <form action="{{ url_for('delete_apartment', id=apartment['id']) }}" method="post" onsubmit="return confirm('WARNING: Deleting this apartment will unassign any connected tenants. Are you sure?');" style="display:inline;">
+                        <input type="submit" value="Delete" class="login-btn action-delete">
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No apartments currently listed.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<footer>
+    <p>&copy; 2025 Rent in Addis. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

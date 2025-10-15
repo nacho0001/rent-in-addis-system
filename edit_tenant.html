@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tenant | Rent in Addis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+<header>
+    <h1>Tenant Management</h1>
+    <p>Logged in as: <strong>{{ session['user_name'] }}</strong></p>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('manage_apartments') }}">Apartments</a></li>
+        <li><a href="{{ url_for('manage_tenants') }}">Manage Tenants</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="form-container">
+    <h2>Edit Tenant: {{ tenant['fullName'] }}</h2>
+    
+    <form action="{{ url_for('edit_tenant', id=tenant['id']) }}" method="post" class="add-form">
+
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName" value="{{ tenant['fullName'] }}" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" value="{{ tenant['phone'] }}" required>
+
+        <label for="email">Email (Optional):</label>
+        <input type="email" id="email" name="email" value="{{ tenant['email'] or '' }}">
+
+        <label for="apartment_id">Assign Apartment:</label>
+        <select id="apartment_id" name="apartment_id">
+                        <option value="" {% if tenant['apartment_id'] is none %}selected{% endif %}>-- Unassigned (No Unit) --</option> 
+            
+                        {% for apartment in apartments %}
+            <option value="{{ apartment['id'] }}" 
+                {% if apartment['id'] == tenant['apartment_id'] %}selected{% endif %}>
+                {{ apartment['name'] }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="lease_start">Lease Start Date:</label>
+        <input type="date" id="lease_start" name="lease_start" value="{{ tenant['lease_start'] }}" required>
+
+        <div class="form-buttons">
+            <a href="{{ url_for('manage_tenants') }}" class="login-btn" style="background-color: #f44336;">Cancel</a>
+            <input type="submit" value="Update Tenant" style="background-color: #2196F3;">
+        </div>
+    </form>
+</div>
+
+<footer>
+    <p>&copy; 2025 Rent in Addis. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

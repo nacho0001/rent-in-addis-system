@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Rent in Addis</title>
+    <!-- CSS is included here for a consistent look -->
+    <style>
+        /* Replicating the styles from index.html */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        /* ---------- Header ---------- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* ---------- Navbar ---------- */
+        .navbar {
+            background-color: #333;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar li {
+            margin: 0 15px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .navbar a:hover,
+        .navbar a.active {
+            background-color: #45a049;
+            color: #fff;
+        }
+
+        /* ---------- Flash Messages (Copied from index.html) ---------- */
+        .flash-messages {
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .flash {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .flash.success {
+            background-color: #4CAF50;
+        }
+
+        .flash.error {
+            background-color: #f44336;
+        }
+
+        /* Dashboard Specific Content Styling */
+        .dashboard-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-card {
+            background-color: #f0fdf4; /* Light green background */
+            border: 1px solid #d4edda;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 6px;
+        }
+
+        .dashboard-card h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .dashboard-actions a {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .dashboard-actions a:hover {
+            background-color: #45a049;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Apartments Management Dashboard</h1>
+    <p>Logged in as: {{ user_name }}</p>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
+        <li><a href="{{ url_for('add_apartment') }}">Add Apartment</a></li>
+        <li><a href="{{ url_for('manage_apartments') }}">Manage Listings</a></li>
+        <li><a href="{{ url_for('home') }}">Public Listings</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<section class="dashboard-content">
+    <h2>Welcome to Your Management Portal</h2>
+    
+    <div class="dashboard-card">
+        <h3>Quick Actions</h3>
+        <p>Jump straight into managing your properties or adding new ones.</p>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('add_apartment') }}">List New Apartment</a>
+            <a href="{{ url_for('manage_apartments') }}" style="background-color: #2196F3;">View & Manage Listings</a>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>System Status</h3>
+        <p>This area will eventually show key metrics like total income, vacant units, and overdue payments.</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Rent in Addis. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

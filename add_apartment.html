@@ -1,0 +1,208 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Apartment | Rent in Addis</title>
+    <!-- CSS is included here for a consistent look, copying styles from dashboard.html -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        /* ---------- Header ---------- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* ---------- Navbar ---------- */
+        .navbar {
+            background-color: #333;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar li {
+            margin: 0 15px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .navbar a:hover,
+        .navbar a.active {
+            background-color: #45a049;
+            color: #fff;
+        }
+
+        /* ---------- Flash Messages ---------- */
+        .flash-messages {
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .flash {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .flash.success {
+            background-color: #4CAF50;
+        }
+
+        .flash.error {
+            background-color: #f44336;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .apartment-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .apartment-form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .apartment-form input[type="text"],
+        .apartment-form input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            transition: border-color 0.2s;
+        }
+
+        .apartment-form input[type="text"]:focus,
+        .apartment-form input[type="number"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .apartment-form button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .apartment-form button:hover {
+            background-color: #45a049;
+        }
+        
+        .apartment-form button:active {
+            transform: scale(0.99);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Add a New Apartment Listing</h1>
+    <p>Use this form to input the details of a new property for rent.</p>
+</header>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li><a href="#" class="active">Add Apartment</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<section class="form-container">
+    <h2>Property Details</h2>
+    <!-- The form points to the new Flask route: /add_apartment -->
+    <form action="{{ url_for('add_apartment') }}" method="post" class="apartment-form">
+        
+        <label for="name">Apartment Name (e.g., Bole Luxury Condo):</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="location">Location (e.g., Gerji, Ayat, Piassa):</label>
+        <input type="text" id="location" name="location" required>
+
+        <label for="rent">Monthly Rent (ETB):</label>
+        <input type="number" id="rent" name="rent" step="0.01" min="1" required>
+
+        <label for="bedrooms">Bedrooms:</label>
+        <input type="number" id="bedrooms" name="bedrooms" min="1" required>
+
+        <label for="bathrooms">Bathrooms:</label>
+        <input type="number" id="bathrooms" name="bathrooms" min="1" required>
+
+        <button type="submit">Add Apartment</button>
+    </form>
+</section>
+
+<footer>
+    <p>&copy; 2025 Rent in Addis. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
