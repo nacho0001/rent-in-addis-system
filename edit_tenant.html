@@ -1,77 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Tenant | Rent in Addis</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tenant - Rent in Addis</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
-    
-<header>
-    <h1>Tenant Management</h1>
-    <p>Logged in as: <strong>{{ session['user_name'] }}</strong></p>
-</header>
+<body class="bg-gray-100 min-h-screen">
 
-<nav class="navbar">
-    <ul>
-        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ url_for('manage_apartments') }}">Apartments</a></li>
-        <li><a href="{{ url_for('manage_tenants') }}">Manage Tenants</a></li>
-        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-    </ul>
-</nav>
+    <!-- Navigation/Header (Consistent Layout) -->
+    <nav class="bg-indigo-600 p-4 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold">Rent in Addis - Manager Panel</h1>
+            <div>
+                <a href="{{ url_for('dashboard') }}" class="text-indigo-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                <a href="{{ url_for('manage_apartments') }}" class="text-indigo-200 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Apartments</a>
+                <a href="{{ url_for('manage_tenants') }}" class="bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium">Tenants</a>
+                <a href="{{ url_for('logout') }}" class="text-red-300 hover:text-red-100 px-3 py-2 rounded-md text-sm font-medium ml-4">Logout</a>
+            </div>
+        </div>
+    </nav>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-messages">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+    <main class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="space-y-3 mb-6">
+                {% for category, message in messages %}
+                    <div class="p-4 rounded-lg text-sm {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-<div class="form-container">
-    <h2>Edit Tenant: {{ tenant['fullName'] }}</h2>
-    
-    <form action="{{ url_for('edit_tenant', id=tenant['id']) }}" method="post" class="add-form">
+        <div class="bg-white p-8 shadow-xl rounded-xl">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-3">
+                Edit Tenant: {{ tenant['fullName'] }}
+            </h2>
+            
+            <form method="POST" action="{{ url_for('edit_tenant', id=tenant['id']) }}" class="space-y-6">
+                
+                <!-- Full Name -->
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="fullName" id="fullName" required 
+                           value="{{ request.form['fullName'] if request.form else tenant['fullName'] }}"
+                           class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number <span class="text-red-500">*</span></label>
+                        <input type="tel" name="phone" id="phone" required 
+                               value="{{ request.form['phone'] if request.form else tenant['phone'] }}"
+                               class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3">
+                    </div>
+                    
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address (Optional)</label>
+                        <input type="email" name="email" id="email" 
+                               value="{{ request.form['email'] if request.form else tenant['email'] or '' }}"
+                               class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3">
+                    </div>
+                </div>
 
-        <label for="fullName">Full Name:</label>
-        <input type="text" id="fullName" name="fullName" value="{{ tenant['fullName'] }}" required>
+                <!-- Lease Start Date -->
+                <div>
+                    <label for="lease_start" class="block text-sm font-medium text-gray-700">Lease Start Date <span class="text-red-500">*</span></label>
+                    <input type="date" name="lease_start" id="lease_start" required 
+                           value="{{ request.form['lease_start'] if request.form else tenant['lease_start'] }}"
+                           class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3">
+                </div>
 
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" value="{{ tenant['phone'] }}" required>
+                <!-- Apartment Assignment Dropdown -->
+                <div>
+                    <label for="apartment_id" class="block text-sm font-medium text-gray-700">Assign Apartment</label>
+                    <select id="apartment_id" name="apartment_id" 
+                            class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg shadow-sm">
+                        
+                        <!-- Option for unassigned -->
+                        <option value="None" 
+                            {% if not tenant['apartment_id'] %}selected{% endif %}>
+                            -- Unassigned (No Apartment) --
+                        </option>
+                        
+                        <!-- List available apartments (includes current if assigned) -->
+                        {% for apartment in available_apartments %}
+                            <option value="{{ apartment['id'] }}"
+                                    {% if apartment['id'] == tenant['apartment_id'] %}selected{% endif %}>
+                                {{ apartment['name'] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="email">Email (Optional):</label>
-        <input type="email" id="email" name="email" value="{{ tenant['email'] or '' }}">
-
-        <label for="apartment_id">Assign Apartment:</label>
-        <select id="apartment_id" name="apartment_id">
-                        <option value="" {% if tenant['apartment_id'] is none %}selected{% endif %}>-- Unassigned (No Unit) --</option> 
-            
-                        {% for apartment in apartments %}
-            <option value="{{ apartment['id'] }}" 
-                {% if apartment['id'] == tenant['apartment_id'] %}selected{% endif %}>
-                {{ apartment['name'] }}
-            </option>
-            {% endfor %}
-        </select>
-
-        <label for="lease_start">Lease Start Date:</label>
-        <input type="date" id="lease_start" name="lease_start" value="{{ tenant['lease_start'] }}" required>
-
-        <div class="form-buttons">
-            <a href="{{ url_for('manage_tenants') }}" class="login-btn" style="background-color: #f44336;">Cancel</a>
-            <input type="submit" value="Update Tenant" style="background-color: #2196F3;">
-        </div>
-    </form>
-</div>
-
-<footer>
-    <p>&copy; 2025 Rent in Addis. All rights reserved.</p>
-</footer>
-
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4 pt-4">
+                    <a href="{{ url_for('manage_tenants') }}" 
+                       class="px-6 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-150 ease-in-out">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
 </html>
