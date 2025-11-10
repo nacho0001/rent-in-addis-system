@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Tenant{% endblock %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Add New Tenant</h1>
+
+    <form method="POST" action="{{ url_for('add_tenant') }}" class="max-w-xl space-y-4">
+        
+        <!-- Full Name -->
+        <div>
+            <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <input type="text" name="fullName" id="fullName" value="{{ form_data.fullName or '' }}" 
+                   class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+        </div>
+
+        <!-- Phone -->
+        <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+            <input type="tel" name="phone" id="phone" value="{{ form_data.phone or '' }}" 
+                   class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+        </div>
+
+        <!-- Email (Optional) -->
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email (Optional)</label>
+            <input type="email" name="email" id="email" value="{{ form_data.email or '' }}" 
+                   class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <!-- Apartment Selection -->
+        <div>
+            <label for="apartment_id" class="block text-sm font-medium text-gray-700">Assign Apartment</label>
+            <select name="apartment_id" id="apartment_id" 
+                    class="mt-1 block w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="None">-- Select Available Apartment (Optional) --</option>
+                {% for apt in available_apartments %}
+                    <option value="{{ apt.id }}" 
+                        {% if form_data.apartment_id and form_data.apartment_id|string == apt.id|string %}selected{% endif %}
+                    >
+                        {{ apt.name }} ({{ apt.location }}) - ${{ "{:,.2f}".format(apt.rent) }}
+                    </option>
+                {% endfor %}
+            </select>
+            <p class="mt-1 text-xs text-gray-500">Only units not currently leased are shown.</p>
+        </div>
+        
+        <!-- Lease Start Date -->
+        <div>
+            <label for="lease_start" class="block text-sm font-medium text-gray-700">Lease Start Date</label>
+            <input type="date" name="lease_start" id="lease_start" value="{{ form_data.lease_start or '' }}"
+                   class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+        </div>
+        
+        <button type="submit" class="w-full p-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+            Add Tenant
+        </button>
+    </form>
+{% endblock %}
